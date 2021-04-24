@@ -13,9 +13,14 @@ interface calcAvgReturn {
   [SellerType.Other]: number;
 }
 
-type ListingsWithContactCount = Listing & { contactsPerListing?: number };
+type ListingWithContactCount = Listing & {
+  ranking?: number;
+  contactsPerListing?: number;
+};
+type ContactWithMonthYear = Contact & { monthYear?: string };
 
 const TOP_PERCENTILE_AMOUNT = 0.3;
+const TOTAL_LISTINGS_FOR_MONTH = 5;
 
 export const getListings = async (): Promise<Array<Listing>> => {
   const data = await loadCSV("listings");
@@ -95,7 +100,7 @@ export const getAvgPriceOfTopPercentile = async (): Promise<number> => {
   }
 
   const results: any = listings.map((listing: Listing) => {
-    const listingsWithContactCount: ListingsWithContactCount = { ...listing };
+    const listingsWithContactCount: ListingWithContactCount = { ...listing };
     listingsWithContactCount.contactsPerListing = contacts.filter(
       (contact: Contact) => contact.listingId === listing.listingId
     ).length;
@@ -103,7 +108,7 @@ export const getAvgPriceOfTopPercentile = async (): Promise<number> => {
   });
 
   results.sort(
-    (a: ListingsWithContactCount, b: ListingsWithContactCount) =>
+    (a: ListingWithContactCount, b: ListingWithContactCount) =>
       a.contactsPerListing > b.contactsPerListing
   );
   const topPercentileLength = Math.round(
@@ -114,10 +119,74 @@ export const getAvgPriceOfTopPercentile = async (): Promise<number> => {
     results
       .slice(0, topPercentileLength)
       .reduce(
-        (val: number, listing: ListingsWithContactCount) =>
+        (val: number, listing: ListingWithContactCount) =>
           (val += listing.price),
         0
       ) / topPercentileLength;
 
   return avg;
+};
+
+const getTopListingsForMonth = (
+  monthYear: string,
+  listings: Array<Listing>,
+  contacts: Array<ContactWithMonthYear>,
+  total: number = TOTAL_LISTINGS_FOR_MONTH
+): Array<ListingWithContactCount> => {
+  const contactsForThisMonth: Array<ContactWithMonthYear> = contacts.filter(
+    (contact: ContactWithMonthYear) => contact.monthYear === monthYear
+  );
+
+  const results: any = listings
+    .map((listing: Listing) => {
+      const listingsWithContactCount: ListingWithContactCount = { ...listing };
+      listingsWithContactCount.contactsPerListing = contactsForThisMonth.filter(
+        (contact: Contact) => contact.listingId === listing.listingId
+      ).length;
+      return listingsWithContactCount;
+    })
+    .sort(
+      (a: ListingWithContactCount, b: ListingWithContactCount) =>
+        b.contactsPerListing - a.contactsPerListing
+    )
+    .slice(0, total);
+
+  return results;
+};
+
+export const topListingsPerMonth = async (): Promise<any> => {
+  const contacts = await getContacts();
+  const listings = await getListings();
+
+  // Convert contacts date to a month year format
+  const formattedContacts: any = contacts.map((contact: Contact) => {
+    const { contactDate, listingId } = contact;
+    // Format date as month.year with a left padding on month e.g. 02.2021
+    const monthYear = `${String(contactDate.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}.${contactDate.getFullYear()}`;
+
+    return { listingId, contactDate, monthYear };
+  });
+
+  // Get distinct months that exist in formatted contacts.
+  const distinctMonths: Array<string> = formattedContacts
+    .reduce((arr: Array<string>, contact: any) => {
+      if (arr.indexOf(contact.monthYear) === -1) {
+        arr.push(contact.monthYear);
+      }
+
+      return arr;
+    }, [])
+    .sort()
+    .reverse();
+
+  let result: any = {};
+
+  distinctMonths.forEach((value: string) => {
+    result[value] = getTopListingsForMonth(value, listings, formattedContacts);
+  });
+
+  return result;
 };

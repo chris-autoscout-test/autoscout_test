@@ -3,6 +3,7 @@ import {
   getAvgPriceOfTopPercentile,
   getListings,
   getVehicleDistribution,
+  topListingsPerMonth,
 } from "./listing";
 import loadCSV from "../utils/load-csv";
 import { getContacts } from "./contacts";
@@ -284,6 +285,51 @@ describe("getAvgPriceOfTopPercentile", () => {
 
     it("should return the correct average for all types", async () => {
       const data = await getAvgPriceOfTopPercentile();
+      expect(data).toEqual(30);
+    });
+  });
+});
+
+describe("topListingsPerMonth", () => {
+  describe("when csv is empty", () => {
+    beforeEach(() => {
+      (loadCSV as jest.Mock).mockResolvedValue([]);
+      (getContacts as jest.Mock).mockResolvedValue([]);
+    });
+    it("should return 0", async () => {
+      const data = await topListingsPerMonth();
+      expect(data).toEqual(0);
+    });
+  });
+
+  describe("when csv has 1 vehicle and 1 contact", () => {
+    beforeEach(() => {
+      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (getContacts as jest.Mock).mockResolvedValue(mockContactData);
+    });
+    it("should the single vehicle value", async () => {
+      const data = await topListingsPerMonth();
+      expect(data).toEqual(30);
+    });
+  });
+
+  describe("when csv has multiple listings in avg", () => {
+    beforeEach(() => {
+      (loadCSV as jest.Mock).mockResolvedValue([
+        ...mockCSVData,
+        {
+          id: "4",
+          make: "Audi",
+          price: "900",
+          mileage: "100",
+          seller_type: "private",
+        },
+      ]);
+      (getContacts as jest.Mock).mockResolvedValue(mockContactData);
+    });
+
+    it("should return the correct average for all types", async () => {
+      const data = await topListingsPerMonth();
       expect(data).toEqual(30);
     });
   });

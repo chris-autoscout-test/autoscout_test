@@ -5,6 +5,7 @@ import {
   getAvgPriceOfTopPercentile,
   getListings,
   getVehicleDistribution,
+  topListingsPerMonth,
 } from "../services/listing";
 
 const api: Express = express();
@@ -35,6 +36,12 @@ api.get("/report/top_percentile", async (req: Request, res: Response) => {
   const data = await getAvgPriceOfTopPercentile();
 
   res.send({ average: data });
+});
+
+api.get("/report/listings_per_month", async (req: Request, res: Response) => {
+  const data = await topListingsPerMonth();
+
+  res.send(data);
 });
 
 export default api;
