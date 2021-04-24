@@ -1,6 +1,10 @@
 import express, { Application, Express, Request, Response } from "express";
 import { getContacts } from "../services/contacts";
-import { getListings } from "../services/listing";
+import {
+  getAveragePricePerSeller,
+  getListings,
+  getVehicleDistribution,
+} from "../services/listing";
 
 const api: Express = express();
 
@@ -14,10 +18,16 @@ api.get("/listings", async (req: Request, res: Response) => {
   res.send(data);
 });
 
-api.get("/report/average_per_seller", async (req: Request, res: Response) => {
-  // const data = await getAveragePricePerSeller();
+api.get("/report/average_price", async (req: Request, res: Response) => {
+  const data = await getAveragePricePerSeller();
 
-  res.send({});
+  res.send(data);
+});
+
+api.get("/report/distribution", async (req: Request, res: Response) => {
+  const data = await getVehicleDistribution();
+
+  res.send(data);
 });
 
 export default api;

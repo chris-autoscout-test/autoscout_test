@@ -1,13 +1,23 @@
 import { Listing, SellerType } from "../models/listing";
 import loadCSV from "../utils/load-csv";
 
+interface calcDistributionReturn {
+  [key: string]: number;
+}
+
+interface calcAvgReturn {
+  [SellerType.Private]: number;
+  [SellerType.Dealer]: number;
+  [SellerType.Other]: number;
+}
+
 export const getListings = async (): Promise<Array<Listing>> => {
   const data = await loadCSV("listings");
   return data.map(
     ({ id, make, price, mileage, seller_type }) =>
       <Listing>{
         listingId: Number(id),
-        make: make,
+        make: make.toLowerCase(), // Using toLowerCase so that any misspellings in the csv wont affect the data.
         price: Number(price),
         mileage: Number(mileage),
         sellerType: seller_type,
@@ -31,12 +41,10 @@ const calculateAvgForListingType = (
     (sum: number, listing: Listing) => sum + listing.price,
     0
   );
-
-  console.log(total);
   return total / filteredListings.length;
 };
 
-export const getAveragePricePerSeller = async (): Promise<any> => {
+export const getAveragePricePerSeller = async (): Promise<calcAvgReturn> => {
   const listings = await getListings();
 
   return {
@@ -50,4 +58,25 @@ export const getAveragePricePerSeller = async (): Promise<any> => {
     ),
     [SellerType.Other]: calculateAvgForListingType(SellerType.Other, listings),
   };
+};
+
+export const getVehicleDistribution = async (): Promise<calcDistributionReturn> => {
+  const listings = await getListings();
+
+  if (listings.length === 0) {
+    return {};
+  }
+
+  const totals = listings.reduce(
+    (result: any, { make }: Listing) =>
+      Object.assign(result, { [make]: result[make] ? result[make] + 1 : 1 }),
+    {}
+  );
+
+  const distribution = { ...totals };
+  Object.keys(totals).forEach((key) => {
+    distribution[key] /= listings.length;
+  });
+
+  return distribution;
 };
