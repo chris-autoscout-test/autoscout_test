@@ -1,4 +1,4 @@
-import { getListings } from "./listing";
+import { getAveragePricePerSeller, getListings } from "./listing";
 import loadCSV from "../utils/load-csv";
 
 jest.mock("../utils/load-csv");
@@ -69,6 +69,74 @@ describe("getListings", () => {
       ];
 
       expect(data).toMatchObject(expectedData);
+    });
+  });
+});
+
+describe("getAveragePricePerSeller", () => {
+  describe("when csv is empty", () => {
+    beforeEach(() => {
+      (loadCSV as any).mockResolvedValue([]);
+    });
+    it("should return 0 for all types", async () => {
+      const data = await getAveragePricePerSeller();
+      expect(data).toMatchObject({
+        private: 0,
+        dealer: 0,
+        other: 0,
+      });
+    });
+  });
+
+  describe("when csv only has 1 of each type", () => {
+    beforeEach(() => {
+      (loadCSV as any).mockResolvedValue(mockCSVData);
+    });
+    it("should return the correct average for all types", async () => {
+      const data = await getAveragePricePerSeller();
+      expect(data).toMatchObject({
+        private: 30,
+        dealer: 45,
+        other: 40,
+      });
+    });
+  });
+
+  describe("when csv has many of each type", () => {
+    beforeEach(() => {
+      (loadCSV as any).mockResolvedValue([
+        ...mockCSVData,
+        {
+          id: "1",
+          make: "Audi",
+          price: "90",
+          mileage: "100",
+          seller_type: "private",
+        },
+        {
+          id: "2",
+          make: "Audi",
+          price: "100",
+          mileage: "100",
+          seller_type: "private",
+        },
+        {
+          id: "3",
+          make: "Audi",
+          price: "500",
+          mileage: "100",
+          seller_type: "private",
+        },
+      ]);
+    });
+
+    it("should return the correct average for all types", async () => {
+      const data = await getAveragePricePerSeller();
+      expect(data).toMatchObject({
+        private: 180,
+        dealer: 45,
+        other: 40,
+      });
     });
   });
 });
