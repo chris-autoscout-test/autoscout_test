@@ -1,30 +1,39 @@
-import { getContacts } from "./contacts";
+import { getListings } from "./listing";
 import loadCSV from "../utils/load-csv";
 
 jest.mock("../utils/load-csv");
 
 const mockCSVData = [
   {
-    listing_id: "1",
-    contact_date: "1592498493000",
+    id: "1",
+    make: "Audi",
+    price: "30",
+    mileage: "100",
+    seller_type: "private",
   },
   {
-    listing_id: "2",
-    contact_date: "1582474057000",
+    id: "2",
+    make: "BMW",
+    price: "45",
+    mileage: "200",
+    seller_type: "dealer",
   },
   {
-    listing_id: "3",
-    contact_date: "1579365755000",
+    id: "3",
+    make: "Mercedes",
+    price: "40",
+    mileage: "300",
+    seller_type: "other",
   },
 ];
 
-describe("getContacts", () => {
+describe("getListings", () => {
   describe("when csv is empty", () => {
     beforeEach(() => {
       (loadCSV as any).mockResolvedValue([]);
     });
     it("should return an empty array", async () => {
-      const data = await getContacts();
+      const data = await getListings();
       expect(data).toMatchObject([]);
     });
   });
@@ -34,19 +43,28 @@ describe("getContacts", () => {
       (loadCSV as any).mockResolvedValue(mockCSVData);
     });
     it("should return the correct array ", async () => {
-      const data = await getContacts();
+      const data = await getListings();
       const expectedData = [
         {
           listingId: 1,
-          contactDate: new Date(1592498493000),
+          make: "Audi",
+          price: 30,
+          mileage: 100,
+          sellerType: "private",
         },
         {
           listingId: 2,
-          contactDate: new Date(1582474057000),
+          make: "BMW",
+          price: 45,
+          mileage: 200,
+          sellerType: "dealer",
         },
         {
           listingId: 3,
-          contactDate: new Date(1579365755000),
+          make: "Mercedes",
+          price: 40,
+          mileage: 300,
+          sellerType: "other",
         },
       ];
 

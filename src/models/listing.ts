@@ -5,7 +5,7 @@ export enum SellerType {
 }
 
 export type Listing = {
-  listingId: string;
+  listingId: number;
   make: string;
   price: number;
   mileage: number;

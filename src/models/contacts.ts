@@ -1,4 +1,4 @@
 export type Contact = {
-  listingId: string;
+  listingId: number;
   contactDate: Date;
 };
