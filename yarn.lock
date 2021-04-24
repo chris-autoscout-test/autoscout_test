@@ -568,6 +568,13 @@
   "resolved" "https://registry.npmjs.org/@types/cookiejar/-/cookiejar-2.1.2.tgz"
   "version" "2.1.2"
 
+"@types/csv-parse@^1.2.2":
+  "integrity" "sha512-k33tLtRKTQxf7hQfMlkWoS2TQYsnpk1ibZN+rzbuCkeBs8m23nHTeDTF1wb/e7/MSLdtgCzqu3oM1I101kd6yw=="
+  "resolved" "https://registry.npmjs.org/@types/csv-parse/-/csv-parse-1.2.2.tgz"
+  "version" "1.2.2"
+  dependencies:
+    "csv-parse" "*"
+
 "@types/express-serve-static-core@^4.17.18":
   "integrity" "sha512-DJOSHzX7pCiSElWaGR8kCprwibCB/3yW6vcT8VG3P0SJjnv19gnWG/AZMfM60Xj/YJIp/YCaDHyvzsFVeniARA=="
   "resolved" "https://registry.npmjs.org/@types/express-serve-static-core/-/express-serve-static-core-4.17.19.tgz"
@@ -1414,6 +1421,18 @@
   "version" "2.3.0"
   dependencies:
     "cssom" "~0.3.6"
+
+"csv-parse@*":
+  "integrity" "sha512-OdBbFc0yZhOm17lSxqkirrHlFFVpKRT0wp4DAGoJelsP3LbGzV9LNr7XmM/lrr0uGkCtaqac9UhP8PDHXOAbMg=="
+  "resolved" "https://registry.npmjs.org/csv-parse/-/csv-parse-4.15.4.tgz"
+  "version" "4.15.4"
+
+"csv-parser@^3.0.0":
+  "integrity" "sha512-s6OYSXAK3IdKqYO33y09jhypG/bSDHPuyCme/IdEHfWpLf/jKcpitVFyOC6UemgGk8v7Q5u2XE0vvwmanxhGlQ=="
+  "resolved" "https://registry.npmjs.org/csv-parser/-/csv-parser-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "minimist" "^1.2.0"
 
 "dashdash@^1.12.0":
   "integrity" "sha1-hTz6D3y+L+1d4gMmuN1YEDX24vA="
