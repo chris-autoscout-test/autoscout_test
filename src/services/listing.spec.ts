@@ -269,13 +269,22 @@ describe("getAvgPriceOfTopPercentile", () => {
 
   describe("when csv has multiple listings in avg", () => {
     beforeEach(() => {
-      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
-      (getContacts as jest.Mock).mockResolvedValue([]);
+      (loadCSV as jest.Mock).mockResolvedValue([
+        ...mockCSVData,
+        {
+          id: "4",
+          make: "Audi",
+          price: "900",
+          mileage: "100",
+          seller_type: "private",
+        },
+      ]);
+      (getContacts as jest.Mock).mockResolvedValue(mockContactData);
     });
 
     it("should return the correct average for all types", async () => {
       const data = await getAvgPriceOfTopPercentile();
-      expect(data).toEqual(1);
+      expect(data).toEqual(30);
     });
   });
 });

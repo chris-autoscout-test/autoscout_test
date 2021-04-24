@@ -2,6 +2,7 @@ import express, { Application, Express, Request, Response } from "express";
 import { getContacts } from "../services/contacts";
 import {
   getAveragePricePerSeller,
+  getAvgPriceOfTopPercentile,
   getListings,
   getVehicleDistribution,
 } from "../services/listing";
@@ -28,6 +29,12 @@ api.get("/report/distribution", async (req: Request, res: Response) => {
   const data = await getVehicleDistribution();
 
   res.send(data);
+});
+
+api.get("/report/top_percentile", async (req: Request, res: Response) => {
+  const data = await getAvgPriceOfTopPercentile();
+
+  res.send({ average: data });
 });
 
 export default api;
