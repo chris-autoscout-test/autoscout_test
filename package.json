@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "echo \"Error: no start script specified\" && exit 1",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npx prettier --write .",
+    "lint:ci": "npx prettier --check .",
+    "test": "npx jest --maxWorkers=25% --colors --verbose --watchAll",
+    "test:ci": "npx jest --runInBand --colors --verbose"
   },
   "author": "chris@aitk.co",
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "jest": "^26.6.3",
+    "prettier": "2.2.1",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4"
   }
