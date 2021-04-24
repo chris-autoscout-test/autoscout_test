@@ -1,11 +1,15 @@
 import {
   getAveragePricePerSeller,
+  getAvgPriceOfTopPercentile,
   getListings,
   getVehicleDistribution,
 } from "./listing";
 import loadCSV from "../utils/load-csv";
+import { getContacts } from "./contacts";
+import { Contact } from "../models/contacts";
 
 jest.mock("../utils/load-csv");
+jest.mock("./contacts");
 
 const mockCSVData = [
   {
@@ -30,11 +34,29 @@ const mockCSVData = [
     seller_type: "other",
   },
 ];
+const mockContactData = [
+  <Contact>{
+    listingId: 3,
+    contactDate: new Date(), // use parse int to convert string to int
+  },
+  <Contact>{
+    listingId: 3,
+    contactDate: new Date(), // use parse int to convert string to int
+  },
+  <Contact>{
+    listingId: 2,
+    contactDate: new Date(), // use parse int to convert string to int
+  },
+  <Contact>{
+    listingId: 3,
+    contactDate: new Date(), // use parse int to convert string to int
+  },
+];
 
 describe("getListings", () => {
   describe("when csv is empty", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([]);
+      (loadCSV as jest.Mock).mockResolvedValue([]);
     });
     it("should return an empty array", async () => {
       const data = await getListings();
@@ -44,7 +66,7 @@ describe("getListings", () => {
 
   describe("when csv has data", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue(mockCSVData);
+      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
     });
     it("should return the correct array ", async () => {
       const data = await getListings();
@@ -80,7 +102,7 @@ describe("getListings", () => {
 describe("getAveragePricePerSeller", () => {
   describe("when csv is empty", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([]);
+      (loadCSV as jest.Mock).mockResolvedValue([]);
     });
     it("should return 0 for all types", async () => {
       const data = await getAveragePricePerSeller();
@@ -94,7 +116,7 @@ describe("getAveragePricePerSeller", () => {
 
   describe("when csv only has 1 of each type", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue(mockCSVData);
+      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
     });
     it("should return the correct average for all types", async () => {
       const data = await getAveragePricePerSeller();
@@ -108,7 +130,7 @@ describe("getAveragePricePerSeller", () => {
 
   describe("when csv has many of each type", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([
+      (loadCSV as jest.Mock).mockResolvedValue([
         ...mockCSVData,
         {
           id: "1",
@@ -148,7 +170,7 @@ describe("getAveragePricePerSeller", () => {
 describe("getVehicleDistribution", () => {
   describe("when csv is empty", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([]);
+      (loadCSV as jest.Mock).mockResolvedValue([]);
     });
     it("should return an empty object", async () => {
       const data = await getVehicleDistribution();
@@ -158,7 +180,7 @@ describe("getVehicleDistribution", () => {
 
   describe("when csv has 1 vehicle make", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([
+      (loadCSV as jest.Mock).mockResolvedValue([
         {
           id: "1",
           make: "Audi",
@@ -185,7 +207,7 @@ describe("getVehicleDistribution", () => {
 
   describe("when csv has many of each make", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([
+      (loadCSV as jest.Mock).mockResolvedValue([
         ...mockCSVData,
         {
           id: "1",
@@ -218,6 +240,42 @@ describe("getVehicleDistribution", () => {
         bmw: 0.16666666666666666,
         mercedes: 0.16666666666666666,
       });
+    });
+  });
+});
+
+describe("getAvgPriceOfTopPercentile", () => {
+  describe("when csv is empty", () => {
+    beforeEach(() => {
+      (loadCSV as jest.Mock).mockResolvedValue([]);
+      (getContacts as jest.Mock).mockResolvedValue([]);
+    });
+    it("should return 0", async () => {
+      const data = await getAvgPriceOfTopPercentile();
+      expect(data).toEqual(0);
+    });
+  });
+
+  describe("when csv has 1 vehicle and 1 contact", () => {
+    beforeEach(() => {
+      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (getContacts as jest.Mock).mockResolvedValue(mockContactData);
+    });
+    it("should the single vehicle value", async () => {
+      const data = await getAvgPriceOfTopPercentile();
+      expect(data).toEqual(30);
+    });
+  });
+
+  describe("when csv has multiple listings in avg", () => {
+    beforeEach(() => {
+      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (getContacts as jest.Mock).mockResolvedValue([]);
+    });
+
+    it("should return the correct average for all types", async () => {
+      const data = await getAvgPriceOfTopPercentile();
+      expect(data).toEqual(1);
     });
   });
 });
