@@ -21,6 +21,11 @@ describe("csv-parser", () => {
     csvArray = await loadCSV("test-path");
   });
 
+  it("should call fs with the correct path", () => {
+    const expectedPath = `${process.env.PWD}/src/static/test-path.csv`;
+    expect(spy).toBeCalledWith(expectedPath);
+  });
+
   it("should return the content of a csv as an array", () => {
     expect(csvArray).toBeInstanceOf(Array);
   });
