@@ -1,6 +1,5 @@
 import { getListings } from "./listing";
 import loadCSV from "../utils/load-csv";
-import { getContacts } from "./contacts";
 import { Contact } from "../models/contacts";
 
 jest.mock("../utils/load-csv");

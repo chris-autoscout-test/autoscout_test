@@ -11,7 +11,7 @@ import { Contact } from "../models/contacts";
 jest.mock("../utils/load-csv");
 jest.mock("./contacts");
 
-const mockCSVData = [
+const mockListingData = [
   {
     id: "1",
     make: "Audi",
@@ -70,7 +70,7 @@ describe("getAveragePricePerSeller", () => {
 
   describe("when csv only has 1 of each type", () => {
     beforeEach(() => {
-      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (loadCSV as jest.Mock).mockResolvedValue(mockListingData);
     });
     it("should return the correct average for all types", async () => {
       const data = await getAveragePricePerSeller();
@@ -85,7 +85,7 @@ describe("getAveragePricePerSeller", () => {
   describe("when csv has many of each type", () => {
     beforeEach(() => {
       (loadCSV as jest.Mock).mockResolvedValue([
-        ...mockCSVData,
+        ...mockListingData,
         {
           id: "1",
           make: "Audi",
@@ -160,7 +160,7 @@ describe("getVehicleDistribution", () => {
   describe("when csv has many of each make", () => {
     beforeEach(() => {
       (loadCSV as jest.Mock).mockResolvedValue([
-        ...mockCSVData,
+        ...mockListingData,
         {
           id: "1",
           make: "Audi",
@@ -210,7 +210,7 @@ describe("getAvgPriceOfTopPercentile", () => {
 
   describe("when csv has 1 vehicle and 1 contact", () => {
     beforeEach(() => {
-      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (loadCSV as jest.Mock).mockResolvedValue(mockListingData);
       (getContacts as jest.Mock).mockResolvedValue(mockContactData);
     });
     it("should the single vehicle value", async () => {
@@ -222,7 +222,7 @@ describe("getAvgPriceOfTopPercentile", () => {
   describe("when csv has multiple listings in avg", () => {
     beforeEach(() => {
       (loadCSV as jest.Mock).mockResolvedValue([
-        ...mockCSVData,
+        ...mockListingData,
         {
           id: "4",
           make: "Audi",
@@ -255,7 +255,7 @@ describe("topListingsPerMonth", () => {
 
   describe("when csv has 1 month of data", () => {
     beforeEach(() => {
-      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (loadCSV as jest.Mock).mockResolvedValue(mockListingData);
       (getContacts as jest.Mock).mockResolvedValue(mockContactData);
     });
     it("return all listings keyed by date", async () => {
