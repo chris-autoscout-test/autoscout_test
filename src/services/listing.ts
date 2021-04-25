@@ -115,16 +115,13 @@ export const getAvgPriceOfTopPercentile = async (): Promise<number> => {
     results.length * TOP_PERCENTILE_AMOUNT
   );
 
-  const avg =
+  return (
     results
       .slice(0, topPercentileLength)
-      .reduce(
-        (val: number, listing: ListingWithContactCount) =>
-          (val += listing.price),
-        0
-      ) / topPercentileLength;
-
-  return avg;
+      .reduce((val: number, listing: ListingWithContactCount) => {
+        return val + listing.price;
+      }, 0) / topPercentileLength
+  );
 };
 
 const getTopListingsForMonth = (
@@ -137,7 +134,7 @@ const getTopListingsForMonth = (
     (contact: ContactWithMonthYear) => contact.monthYear === monthYear
   );
 
-  const results: any = listings
+  return listings
     .map((listing: Listing) => {
       const listingsWithContactCount: ListingWithContactCount = { ...listing };
       listingsWithContactCount.contactsPerListing = contactsForThisMonth.filter(
@@ -150,8 +147,6 @@ const getTopListingsForMonth = (
         b.contactsPerListing - a.contactsPerListing
     )
     .slice(0, total);
-
-  return results;
 };
 
 export const topListingsPerMonth = async (): Promise<any> => {
