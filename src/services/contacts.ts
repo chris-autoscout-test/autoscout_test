@@ -12,3 +12,9 @@ export const getContacts = async (): Promise<Array<Contact>> => {
       }
   );
 };
+
+export const updateContacts = async (contactsCSV: any): Promise<boolean> => {
+  console.log(contactsCSV);
+
+  return true;
+};

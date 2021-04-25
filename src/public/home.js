@@ -3,8 +3,8 @@
 const e = React.createElement;
 
 const AppNav = () => (
-  <nav class="navbar navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">
+  <nav className="navbar navbar-dark bg-dark">
+    <a className="navbar-brand" href="#">
       Autoscout24 Reports
     </a>
   </nav>
