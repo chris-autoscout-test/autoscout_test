@@ -4,7 +4,8 @@ import { getContacts } from "./contacts";
 import { Contact } from "../models/contacts";
 
 interface calcDistributionReturn {
-  [key: string]: number;
+  make: string;
+  percentage: number;
 }
 
 interface calcAvgReturn {
@@ -71,11 +72,13 @@ export const getAveragePricePerSeller = async (): Promise<calcAvgReturn> => {
   };
 };
 
-export const getVehicleDistribution = async (): Promise<calcDistributionReturn> => {
+export const getVehicleDistribution = async (): Promise<
+  Array<calcDistributionReturn>
+> => {
   const listings = await getListings();
 
   if (listings.length === 0) {
-    return {};
+    return [];
   }
 
   const totals = listings.reduce(
@@ -84,12 +87,18 @@ export const getVehicleDistribution = async (): Promise<calcDistributionReturn> 
     {}
   );
 
-  const distribution = { ...totals };
+  let distribution: any = [];
   Object.keys(totals).forEach((key) => {
-    distribution[key] /= listings.length;
+    distribution.push({
+      make: key,
+      percentage: totals[key] / listings.length,
+    });
   });
-
-  return distribution;
+  // Convert object to array so that it can be sorter
+  return distribution.sort(
+    (a: calcDistributionReturn, b: calcDistributionReturn) =>
+      b.percentage - a.percentage
+  );
 };
 
 export const getAvgPriceOfTopPercentile = async (): Promise<number> => {
@@ -171,7 +180,6 @@ export const topListingsPerMonth = async (): Promise<any> => {
       if (arr.indexOf(contact.monthYear) === -1) {
         arr.push(contact.monthYear);
       }
-
       return arr;
     }, [])
     .sort()

@@ -10,6 +10,18 @@ const AppNav = () => (
   </nav>
 );
 
+const formatPercentage = (value) => {
+  return `${Math.round(value * 100)} %`;
+};
+
+const formatMoney = (value) => {
+  return `€ ${Math.round(value).toLocaleString("de")},-`;
+};
+
+const formatMileage = (value) => {
+  return `${Math.round(value).toLocaleString("de")} KM`;
+};
+
 const SellerTypePriceTable = () => {
   const [sellerPrice, setSellerPrice] = React.useState();
   const [isFetching, setIsFetching] = React.useState(false);
@@ -22,10 +34,6 @@ const SellerTypePriceTable = () => {
     setSellerPrice(report);
     setIsFetching(false);
   }, []);
-
-  const formatMoney = (value) => {
-    return `€ ${Math.round(value).toLocaleString("de")},-`;
-  };
 
   const renderTableRows = () => {
     if (isFetching || !sellerPrice) {
@@ -49,29 +57,169 @@ const SellerTypePriceTable = () => {
   };
 
   return (
-    <table className={"table"}>
-      <thead>
-        <tr>
-          <th>Seller Type</th>
-          <th>Average In Euro</th>
-        </tr>
-      </thead>
-      <tbody>{renderTableRows()}</tbody>
-    </table>
+    <div>
+      <h4>Average Listing Selling Price per Seller Type</h4>
+      <table className={"table"}>
+        <thead>
+          <tr>
+            <th>Seller Type</th>
+            <th>Average In Euro</th>
+          </tr>
+        </thead>
+        <tbody>{renderTableRows()}</tbody>
+      </table>
+    </div>
   );
 };
 
-const Home = () => {
-  React.useEffect(() => {
-    console.log("Hello World");
+const DistributionTable = () => {
+  const [distribution, setDistribution] = React.useState();
+  const [isFetching, setIsFetching] = React.useState(false);
+
+  React.useEffect(async () => {
+    setIsFetching(true);
+    const report = await fetch("/api/report/distribution").then((response) =>
+      response.json()
+    );
+    setDistribution(report);
+    setIsFetching(false);
+  }, []);
+
+  const renderTableRows = () => {
+    if (isFetching || !distribution) {
+      return;
+    }
+
+    return distribution.map(({ make, percentage }) => {
+      return (
+        <tr>
+          <td>{make}</td>
+          <td>{formatPercentage(percentage)}</td>
+        </tr>
+      );
+    });
+  };
+
+  return (
+    <div>
+      <h4>Percentual distribution of available cars by make</h4>
+      <table className={"table"}>
+        <thead>
+          <tr>
+            <th>Make</th>
+            <th>Distribution</th>
+          </tr>
+        </thead>
+        <tbody>{renderTableRows()}</tbody>
+      </table>
+    </div>
+  );
+};
+
+const AveragePrice = () => {
+  const [topPercentile, setTopPercentile] = React.useState();
+
+  React.useEffect(async () => {
+    const report = await fetch("/api/report/top_percentile").then((response) =>
+      response.json()
+    );
+    setTopPercentile(report.average);
   }, []);
 
   return (
     <div>
+      <h4>Top Percentile</h4>
+      <table className={"table"}>
+        <thead>
+          <tr>
+            <th>AveragePrice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{topPercentile && formatMoney(topPercentile)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const TopFiveListingsPerMonth = () => {
+  const [listingsPerMonth, setListingsPerMonth] = React.useState({});
+
+  React.useEffect(async () => {
+    const report = await fetch(
+      "/api/report/listings_per_month"
+    ).then((response) => response.json());
+    setListingsPerMonth(report);
+  }, []);
+
+  return (
+    <div>
+      <h4>Top Percentile</h4>
+      {Object.keys(listingsPerMonth).map((key) => {
+        return (
+          <div className="row">
+            <span>
+              <strong>{key}</strong>
+            </span>
+            <table className={"table"}>
+              <thead>
+                <tr>
+                  <th>Ranking</th>
+                  <th>Listing id</th>
+                  <th>Make</th>
+                  <th>Selling Price</th>
+                  <th>Mileage</th>
+                  <th>Total Amount of contacts</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listingsPerMonth[key].map((listing, index) => {
+                  return (
+                    <tr>
+                      <td>{index + 1}</td>
+                      <td>{listing.listingId}</td>
+                      <td>{listing.make}</td>
+                      <td>{formatMoney(listing.price)}</td>
+                      <td>{formatMileage(listing.mileage)}</td>
+                      <td>{listing.contactsPerListing}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+      })}
+      ;
+    </div>
+  );
+};
+
+const Home = () => {
+  return (
+    <div>
       <AppNav />
       <div className="container">
-        <div className="col-sm-6">
-          <SellerTypePriceTable />
+        <div className="row">
+          <div className="col-sm-6">
+            <div className="row">
+              <SellerTypePriceTable />
+            </div>
+            <div className="row">
+              <AveragePrice />
+            </div>
+          </div>
+
+          <div className="col-sm-6">
+            <DistributionTable />
+          </div>
+
+          <div className="col-sm-12">
+            <TopFiveListingsPerMonth />
+          </div>
         </div>
       </div>
     </div>
