@@ -5,7 +5,7 @@ const e = React.createElement;
 const AppNav = () => (
   <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="#">
-      Autoscout Reports
+      Autoscout24 Reports
     </a>
   </nav>
 );
@@ -128,7 +128,7 @@ const AveragePrice = () => {
 
   return (
     <div>
-      <h4>Top Percentile</h4>
+      <h4>Avg Price of the top 30 listings</h4>
       <table className={"table"}>
         <thead>
           <tr>
@@ -157,7 +157,7 @@ const TopFiveListingsPerMonth = () => {
 
   return (
     <div>
-      <h4>Top Percentile</h4>
+      <h4>Top Listings per Month</h4>
       {Object.keys(listingsPerMonth).map((key) => {
         return (
           <div className="row">
@@ -193,7 +193,6 @@ const TopFiveListingsPerMonth = () => {
           </div>
         );
       })}
-      ;
     </div>
   );
 };
@@ -206,10 +205,10 @@ const Home = () => {
         <div className="row">
           <div className="col-sm-6">
             <div className="row">
-              <SellerTypePriceTable />
+              <AveragePrice />
             </div>
             <div className="row">
-              <AveragePrice />
+              <SellerTypePriceTable />
             </div>
           </div>
 
