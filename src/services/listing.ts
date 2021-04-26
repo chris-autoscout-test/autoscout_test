@@ -31,6 +31,6 @@ const validateListing = (data: any) => {
 
 
 export const updateListings = async (updatedData: any): Promise<boolean> => {
-  return await updateCSV("contacts", updatedData, validateListing);
+  return await updateCSV("listings", updatedData, validateListing);
 };
 
