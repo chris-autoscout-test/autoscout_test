@@ -2,8 +2,6 @@ import { Contact } from "../models/contacts";
 import loadCSV from "../utils/load-csv";
 import updateCSV from "../utils/update-csv";
 
-const CSV_HEADERS = ["listing_id", "contact_date"];
-
 export const getContacts = async (): Promise<Array<Contact>> => {
   const data = await loadCSV("contacts");
 

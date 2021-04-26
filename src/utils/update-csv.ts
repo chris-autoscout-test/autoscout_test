@@ -19,7 +19,7 @@ const updateCSV = async (
     try {
       newData = await parse(data, { columns: true });
     } catch {
-      reject('could_not_parse');
+      reject("could_not_parse");
       return;
     }
     // Remove any invalid pieces of data

@@ -1,11 +1,9 @@
 import { getListings } from "./listing";
 import loadCSV from "../utils/load-csv";
 import updateCSV from "../utils/update-csv";
-import { Contact } from "../models/contacts";
 
 jest.mock("../utils/load-csv");
 jest.mock("../utils/update-csv");
-jest.mock("./contacts");
 
 const mockCSVData = [
   {
@@ -30,30 +28,12 @@ const mockCSVData = [
     seller_type: "other",
   },
 ];
-const mockContactData = [
-  <Contact>{
-    listingId: 3,
-    contactDate: new Date(), // use parse int to convert string to int
-  },
-  <Contact>{
-    listingId: 3,
-    contactDate: new Date(), // use parse int to convert string to int
-  },
-  <Contact>{
-    listingId: 2,
-    contactDate: new Date(), // use parse int to convert string to int
-  },
-  <Contact>{
-    listingId: 3,
-    contactDate: new Date(), // use parse int to convert string to int
-  },
-];
 
 describe("getListings", () => {
   describe("when csv is empty", () => {
     beforeEach(() => {
       (loadCSV as jest.Mock).mockResolvedValue([]);
-      (updateCSV as jest.Mock).mockImplementation(() => {})
+      (updateCSV as jest.Mock).mockImplementation(() => {});
     });
     it("should return an empty array", async () => {
       const data = await getListings();
@@ -64,7 +44,7 @@ describe("getListings", () => {
   describe("when csv has data", () => {
     beforeEach(() => {
       (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
-      (updateCSV as jest.Mock).mockImplementation(() => {})
+      (updateCSV as jest.Mock).mockImplementation(() => {});
     });
     it("should return the correct array ", async () => {
       const data = await getListings();

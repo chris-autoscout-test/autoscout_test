@@ -1,7 +1,6 @@
-import express, { Application, Express, Request, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import { getContacts, updateContacts } from "../services/contacts";
 import { getListings, updateListings } from "../services/listing";
-import { UploadedFile } from "express-fileupload";
 
 const api: Express = express();
 
@@ -59,7 +58,7 @@ api.get("/listings", async (req: Request, res: Response) => {
   res.send(data);
 });
 
-api.post("/listings", async (req: any, res: Response) => {
+api.post("/listings", (req: any, res: Response) => {
   handleCSVUpload(req, res, "listings");
 });
 

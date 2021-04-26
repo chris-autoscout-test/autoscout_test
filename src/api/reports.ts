@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from "express";
-import { updateContacts } from "../services/contacts";
 import {
   getAveragePricePerSeller,
   getAvgPriceOfTopPercentile,
@@ -8,6 +7,17 @@ import {
 } from "../services/reports";
 
 const reports: Express = express();
+
+reports.get("/", async (req: Request, res: Response) => {
+  const data = {
+    average_price: await getAveragePricePerSeller(),
+    distribution: await getVehicleDistribution(),
+    top_percentile: await getAvgPriceOfTopPercentile(),
+    listings_per_month: await topListingsPerMonth(),
+  };
+
+  res.send(data);
+});
 
 reports.get("/average_price", async (req: Request, res: Response) => {
   res.send(await getAveragePricePerSeller());

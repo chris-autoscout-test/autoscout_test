@@ -52,7 +52,7 @@ const SellerTypePriceTable = () => {
       <tr>
         <td>Other</td>
         <td>{formatMoney(sellerPrice.other)}</td>
-      </tr>
+      </tr>,
     ];
   };
 
@@ -61,10 +61,10 @@ const SellerTypePriceTable = () => {
       <h4>Average Listing Selling Price per Seller Type</h4>
       <table className={"table"}>
         <thead>
-        <tr>
-          <th>Seller Type</th>
-          <th>Average In Euro</th>
-        </tr>
+          <tr>
+            <th>Seller Type</th>
+            <th>Average In Euro</th>
+          </tr>
         </thead>
         <tbody>{renderTableRows()}</tbody>
       </table>
@@ -105,10 +105,10 @@ const DistributionTable = () => {
       <h4>Percentual distribution of available cars by make</h4>
       <table className={"table"}>
         <thead>
-        <tr>
-          <th>Make</th>
-          <th>Distribution</th>
-        </tr>
+          <tr>
+            <th>Make</th>
+            <th>Distribution</th>
+          </tr>
         </thead>
         <tbody>{renderTableRows()}</tbody>
       </table>
@@ -131,14 +131,14 @@ const AveragePrice = () => {
       <h4>Avg Price of the top 30 listings</h4>
       <table className={"table"}>
         <thead>
-        <tr>
-          <th>AveragePrice</th>
-        </tr>
+          <tr>
+            <th>AveragePrice</th>
+          </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>{topPercentile && formatMoney(topPercentile)}</td>
-        </tr>
+          <tr>
+            <td>{topPercentile && formatMoney(topPercentile)}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -166,28 +166,28 @@ const TopFiveListingsPerMonth = () => {
             </span>
             <table className={"table"}>
               <thead>
-              <tr>
-                <th>Ranking</th>
-                <th>Listing id</th>
-                <th>Make</th>
-                <th>Selling Price</th>
-                <th>Mileage</th>
-                <th>Total Amount of contacts</th>
-              </tr>
+                <tr>
+                  <th>Ranking</th>
+                  <th>Listing id</th>
+                  <th>Make</th>
+                  <th>Selling Price</th>
+                  <th>Mileage</th>
+                  <th>Total Amount of contacts</th>
+                </tr>
               </thead>
               <tbody>
-              {listingsPerMonth[key].map((listing, index) => {
-                return (
-                  <tr>
-                    <td>{index + 1}</td>
-                    <td>{listing.listingId}</td>
-                    <td>{listing.make}</td>
-                    <td>{formatMoney(listing.price)}</td>
-                    <td>{formatMileage(listing.mileage)}</td>
-                    <td>{listing.contactsPerListing}</td>
-                  </tr>
-                );
-              })}
+                {listingsPerMonth[key].map((listing, index) => {
+                  return (
+                    <tr>
+                      <td>{index + 1}</td>
+                      <td>{listing.listingId}</td>
+                      <td>{listing.make}</td>
+                      <td>{formatMoney(listing.price)}</td>
+                      <td>{formatMileage(listing.mileage)}</td>
+                      <td>{listing.contactsPerListing}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -200,7 +200,11 @@ const TopFiveListingsPerMonth = () => {
 const Home = () => {
   const [contactsFile, setContactsFile] = React.useState();
   const [listingsFile, setListingsFile] = React.useState();
-  const [showAlert, setShowAlert] = React.useState({ variant: "success", text: "", visible: false });
+  const [showAlert, setShowAlert] = React.useState({
+    variant: "success",
+    text: "",
+    visible: false,
+  });
   const onFileUpload = (event, type) => {
     if (type === "contacts") {
       setContactsFile(event.target.files[0]);
@@ -220,38 +224,40 @@ const Home = () => {
 
     fetch(`/api/${type}`, {
       method: "POST",
-      body: form
-    }).then(res => {
-      if (res.status === 409 || res.status === 400) {
+      body: form,
+    })
+      .then((res) => {
+        if (res.status === 409 || res.status === 400) {
+          setShowAlert({
+            variant: "danger",
+            text: `Uploaded  ${type}  CSV is invalid. Please check again`,
+            visible: true,
+          });
+        } else {
+          setShowAlert({
+            variant: "success",
+            text: `successfully uploaded ${type}`,
+            visible: true,
+          });
+        }
+      })
+      .catch((err) => {
         setShowAlert({
           variant: "danger",
-          text: `Uploaded  ${type}  CSV is invalid. Please check again`,
-          visible: true
+          text: err,
+          visible: true,
         });
-      } else {
-        setShowAlert({
-          variant: "success",
-          text: `successfully uploaded ${type}`,
-          visible: true
-        });
-      }
-    })
-    .catch((err) => {
-      setShowAlert({
-        variant: "danger",
-        text: err,
-        visible: true
       });
-    });
   };
 
   return (
     <div>
       <AppNav />
-      {showAlert.visible &&
-      <div className={`alert alert-${showAlert.variant}`} role="alert">
-        {showAlert.text}
-      </div>}
+      {showAlert.visible && (
+        <div className={`alert alert-${showAlert.variant}`} role="alert">
+          {showAlert.text}
+        </div>
+      )}
       <div className="container">
         <div className="row mb-3">
           <div className="col-sm-6">
@@ -259,12 +265,16 @@ const Home = () => {
               <h4>Update Contacts</h4>
             </div>
             <div className="row">
-              <input type="file"
-                     name="file"
-                     onChange={(event) => onFileUpload(event, "contacts")} />
-              <button type="button"
-                      className="btn btn-success pull-right"
-                      onClick={() => upload("contacts")}>
+              <input
+                type="file"
+                name="file"
+                onChange={(event) => onFileUpload(event, "contacts")}
+              />
+              <button
+                type="button"
+                className="btn btn-success pull-right"
+                onClick={() => upload("contacts")}
+              >
                 Upload
               </button>
             </div>
@@ -275,12 +285,16 @@ const Home = () => {
               <h4>Update Listings</h4>
             </div>
             <div className="row">
-              <input type="file"
-                     name="file"
-                     onChange={(event) => onFileUpload(event, "listings")} />
-              <button type="button"
-                      className="btn btn-success pull-right"
-                      onClick={() => upload("listings")}>
+              <input
+                type="file"
+                name="file"
+                onChange={(event) => onFileUpload(event, "listings")}
+              />
+              <button
+                type="button"
+                className="btn btn-success pull-right"
+                onClick={() => upload("listings")}
+              >
                 Upload
               </button>
             </div>
