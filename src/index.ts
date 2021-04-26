@@ -6,5 +6,5 @@ import app from "./app";
 const port = process.env.SERVER_PORT;
 
 app.listen(port, () => {
-  console.log(`I am a server on port ${port}`);
+  console.log(`Server Listening on http://localhost:${port}`);
 });

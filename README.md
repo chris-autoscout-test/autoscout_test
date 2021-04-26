@@ -50,7 +50,9 @@ npm run tests
    - Add an upload endpoint to the server that receives CSV files, validates their format and uses the data in the uploaded CSV to fulfill the above requirements for subsequent requests
 
 > CSV can be uploaded via posting to `/api/contacts` and `/api/listings` with the csv. This can also be viewed by using the file upload on the
-> webpage or using the flowing curl request
+> webpage or using the flowing curl request. For the CSV upload I decided to append it to the existing CSV. I also do check
+> for any duplicate records on the listings side by listing ID and do not add them as I assumed they must be unique and 
+> duplicates would cause issues in the reporting calculations.
 
 ```bash
 curl -X POST \

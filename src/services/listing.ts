@@ -25,6 +25,7 @@ const validateListing = (data: any, existingData: any) => {
   if (["private", "other", "dealer"].indexOf(seller_type) === -1) {
     return false;
   }
+  if(price < 0 || mileage < 0) {return false;}
 
   const alreadyExists =
     existingData.filter((existingDataRow: any) => existingDataRow.id === id)
