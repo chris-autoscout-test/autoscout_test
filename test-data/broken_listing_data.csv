@@ -1,0 +1,6 @@
+"id","make","price","mileage","seller_type"
+1,,,,
+1,"audi",,,
+1,"audi",999
+"test",999,"foo", "bar", "no seller"
+"test",999,"foo", 99999999, "other"

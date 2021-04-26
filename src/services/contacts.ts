@@ -1,5 +1,8 @@
 import { Contact } from "../models/contacts";
 import loadCSV from "../utils/load-csv";
+import updateCSV from "../utils/update-csv";
+
+const CSV_HEADERS = ["listing_id", "contact_date"];
 
 export const getContacts = async (): Promise<Array<Contact>> => {
   const data = await loadCSV("contacts");
@@ -13,8 +16,20 @@ export const getContacts = async (): Promise<Array<Contact>> => {
   );
 };
 
-export const updateContacts = async (contactsCSV: any): Promise<boolean> => {
-  console.log(contactsCSV);
+const validateContact = (data: any): boolean => {
+  if(!data.listing_id) {
+    return false
+  }
+
+  const date = new Date(parseInt(data?.contact_date))
+
+  if(!data.contact_date && date instanceof Date && !isNaN(date.valueOf())) {
+    return false
+  }
 
   return true;
+}
+
+export const updateContacts = (updatedData: any): Promise<boolean> => {
+  return updateCSV("contacts", updatedData, validateContact);
 };
