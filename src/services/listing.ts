@@ -26,9 +26,9 @@ const validateListing = (data: any, existingData: any) => {
     return false;
   }
 
-  const alreadyExists = existingData.filter(
-    (existingDataRow: any) => existingDataRow.id === id
-  ).length > 0;
+  const alreadyExists =
+    existingData.filter((existingDataRow: any) => existingDataRow.id === id)
+      .length > 0;
 
   // listing id should be unique
   if (alreadyExists) {

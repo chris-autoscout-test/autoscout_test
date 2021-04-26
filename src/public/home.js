@@ -28,7 +28,7 @@ const SellerTypePriceTable = () => {
 
   React.useEffect(async () => {
     setIsFetching(true);
-    const report = await fetch("/api/report/average_price").then((response) =>
+    const report = await fetch("/api/reports/average_price").then((response) =>
       response.json()
     );
     setSellerPrice(report);
@@ -78,7 +78,7 @@ const DistributionTable = () => {
 
   React.useEffect(async () => {
     setIsFetching(true);
-    const report = await fetch("/api/report/distribution").then((response) =>
+    const report = await fetch("/api/reports/distribution").then((response) =>
       response.json()
     );
     setDistribution(report);
@@ -120,7 +120,7 @@ const AveragePrice = () => {
   const [topPercentile, setTopPercentile] = React.useState();
 
   React.useEffect(async () => {
-    const report = await fetch("/api/report/top_percentile").then((response) =>
+    const report = await fetch("/api/reports/top_percentile").then((response) =>
       response.json()
     );
     setTopPercentile(report.average);
@@ -150,7 +150,7 @@ const TopFiveListingsPerMonth = () => {
 
   React.useEffect(async () => {
     const report = await fetch(
-      "/api/report/listings_per_month"
+      "/api/reports/listings_per_month"
     ).then((response) => response.json());
     setListingsPerMonth(report);
   }, []);

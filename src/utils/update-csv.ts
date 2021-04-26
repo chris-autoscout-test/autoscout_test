@@ -28,7 +28,7 @@ const updateCSV = async (
       !existingData ||
       (validData.length === 0 && existingData.length === 0)
     ) {
-      reject('no_data_to_update')
+      reject("no_data_to_update");
       return;
     }
 
