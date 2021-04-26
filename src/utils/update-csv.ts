@@ -15,8 +15,13 @@ const updateCSV = async (
 
     const fileContent: Buffer = await fs.readFile(filePath);
     const existingData = await parse(fileContent, { columns: true });
-    const newData = await parse(data, { columns: true });
-
+    let newData;
+    try {
+      newData = await parse(data, { columns: true });
+    } catch {
+      reject('could_not_parse');
+      return;
+    }
     // Remove any invalid pieces of data
     const validData = newData.filter((data: any) =>
       dataValidator(data, existingData)

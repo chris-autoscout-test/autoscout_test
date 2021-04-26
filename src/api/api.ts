@@ -32,6 +32,9 @@ const handleCSVUpload = async (req: Request, res: Response, type: string) => {
       if (err === "no_data_to_update") {
         res.status(409);
         res.send("Uploaded CSV is invalid. Please check again");
+      } else if (err === "could_not_parse") {
+        res.status(400);
+        res.send("CSV could not be parsed please check the content");
       } else {
         res.status(500);
         res.send("Something went wrong! Please try again.");
