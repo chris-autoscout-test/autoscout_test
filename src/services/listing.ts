@@ -11,12 +11,12 @@ export const getListings = async (): Promise<Array<Listing>> => {
         make: make && make.toLowerCase(), // Using toLowerCase so that any misspellings in the csv wont affect the data.
         price: Number(price),
         mileage: Number(mileage),
-        sellerType: seller_type
+        sellerType: seller_type,
       }
   );
 };
 
-const validateListing = (data: any) => {
+const validateListing = (data: any, existingData: any) => {
   const { id, make, price, mileage, seller_type } = data;
   if (!id || !make || !price || !mileage || !seller_type) {
     return false;
@@ -26,11 +26,18 @@ const validateListing = (data: any) => {
     return false;
   }
 
+  const alreadyExists = existingData.filter(
+    (existingDataRow: any) => existingDataRow.id === id
+  ).length > 0;
+
+  // listing id should be unique
+  if (alreadyExists) {
+    return false;
+  }
+
   return true;
 };
-
 
 export const updateListings = async (updatedData: any): Promise<boolean> => {
   return await updateCSV("listings", updatedData, validateListing);
 };
-

@@ -17,18 +17,18 @@ export const getContacts = async (): Promise<Array<Contact>> => {
 };
 
 const validateContact = (data: any): boolean => {
-  if(!data.listing_id) {
-    return false
+  if (!data.listing_id) {
+    return false;
   }
 
-  const date = new Date(parseInt(data?.contact_date))
+  const date = new Date(parseInt(data?.contact_date));
 
-  if(!data.contact_date && date instanceof Date && !isNaN(date.valueOf())) {
-    return false
+  if (!data.contact_date && date instanceof Date && !isNaN(date.valueOf())) {
+    return false;
   }
 
   return true;
-}
+};
 
 export const updateContacts = (updatedData: any): Promise<boolean> => {
   return updateCSV("contacts", updatedData, validateContact);

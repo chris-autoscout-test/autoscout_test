@@ -8,11 +8,9 @@ const root = process.env.PWD;
 const updateCSV = async (
   filename: string,
   data: Buffer,
-  dataValidator: (data: any) => boolean
+  dataValidator: (data: any, existingData: any) => boolean
 ): Promise<boolean> => {
-
   return new Promise(async (resolve, reject) => {
-
     const filePath = `${root}/src/static/${filename}.csv`;
 
     const fileContent: Buffer = await fs.readFile(filePath);
@@ -20,10 +18,17 @@ const updateCSV = async (
     const newData = await parse(data, { columns: true });
 
     // Remove any invalid pieces of data
-    const validData = newData.filter(dataValidator);
+    const validData = newData.filter((data: any) =>
+      dataValidator(data, existingData)
+    );
 
-    if((!validData || validData.length === 0) || (!existingData || validData.length === 0 && existingData.length === 0)) {
-      reject('No valid data to update');
+    if (
+      !validData ||
+      validData.length === 0 ||
+      !existingData ||
+      (validData.length === 0 && existingData.length === 0)
+    ) {
+      reject('no_data_to_update')
       return;
     }
 
@@ -36,8 +41,8 @@ const updateCSV = async (
       await fs.writeFile(filePath, newCSV);
 
       resolve(newData);
-    } catch(err) {
-      reject(err)
+    } catch (err) {
+      reject(err);
     }
   });
 };
