@@ -1,7 +1,9 @@
 import { getContacts } from "./contacts";
 import loadCSV from "../utils/load-csv";
+import updateCSV from "../utils/update-csv";
 
 jest.mock("../utils/load-csv");
+jest.mock("../utils/update-csv");
 
 const mockCSVData = [
   {
@@ -21,7 +23,8 @@ const mockCSVData = [
 describe("getContacts", () => {
   describe("when csv is empty", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue([]);
+      (loadCSV as jest.Mock).mockResolvedValue([]);
+      (updateCSV as jest.Mock).mockImplementation(() => {})
     });
     it("should return an empty array", async () => {
       const data = await getContacts();
@@ -31,7 +34,8 @@ describe("getContacts", () => {
 
   describe("when csv has data", () => {
     beforeEach(() => {
-      (loadCSV as any).mockResolvedValue(mockCSVData);
+      (loadCSV as jest.Mock).mockResolvedValue(mockCSVData);
+      (updateCSV as jest.Mock).mockImplementation(() => {})
     });
     it("should return the correct array ", async () => {
       const data = await getContacts();
